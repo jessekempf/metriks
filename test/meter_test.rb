@@ -35,4 +35,13 @@ class MeterTest < Test::Unit::TestCase
 
     assert_equal 200, @meter.one_minute_rate
   end
+
+  def test_reportable_fields
+    fields = [
+      :count, :one_minute_rate, :five_minute_rate,
+      :fifteen_minute_rate, :mean_rate
+    ]
+
+    assert_equal fields, @meter.reportable_fields
+  end
 end

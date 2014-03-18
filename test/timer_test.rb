@@ -29,4 +29,14 @@ class TimerTest < Test::Unit::TestCase
 
     assert_in_delta 0.1, @timer.mean, 0.01
   end
+
+  def test_reportable_fields
+    fields = [
+      :count, :one_minute_rate, :five_minute_rate,
+      :fifteen_minute_rate, :mean_rate,
+      :min, :max, :mean, :stddev
+    ]
+
+    assert_equal fields, @timer.reportable_fields
+  end
 end

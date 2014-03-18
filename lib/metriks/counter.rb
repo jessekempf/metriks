@@ -40,5 +40,14 @@ module Metriks
     def count
       @count.value
     end
+
+    # Private: The fields that should be reported to a metrics consumer.
+    #
+    # Returns an array of symbols.
+    def reportable_fields
+      [
+        :count
+      ]
+    end
   end
 end

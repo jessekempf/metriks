@@ -97,5 +97,22 @@ module Metriks
     def stop
       @meter.stop
     end
+
+    # Private: The fields that should be reported to a metrics consumer.
+    #
+    # Returns an array of symbols.
+    def reportable_fields
+      [
+        :count,
+        :one_minute_rate,
+        :five_minute_rate,
+        :fifteen_minute_rate,
+        :mean_rate,
+        :min,
+        :max,
+        :mean,
+        :stddev
+      ]
+    end
   end
 end

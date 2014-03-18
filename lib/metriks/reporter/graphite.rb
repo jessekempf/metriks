@@ -48,49 +48,11 @@ module Metriks::Reporter
 
     def write
       @registry.each do |name, metric|
-        case metric
-        when Metriks::Meter
-          write_metric name, metric, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate
-          ]
-        when Metriks::Counter
-          write_metric name, metric, [
-            :count
-          ]
-        when Metriks::Gauge
-          write_metric name, metric, [
-            :value
-          ]
-        when Metriks::UtilizationTimer
-          write_metric name, metric, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev,
-            :one_minute_utilization, :five_minute_utilization,
-            :fifteen_minute_utilization, :mean_utilization,
-          ], [
-            :median, :get_95th_percentile
-          ]
-        when Metriks::Timer
-          write_metric name, metric, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev
-          ], [
-            :median, :get_95th_percentile
-          ]
-        when Metriks::Histogram
-          write_metric name, metric, [
-            :count, :min, :max, :mean, :stddev
-          ], [
-            :median, :get_95th_percentile
-          ]
-        end
+        write_metric(name, metric)
       end
     end
 
-    def write_metric(base_name, metric, keys, snapshot_keys = [])
+    def write_metric(base_name, metric)
       time = Time.now.to_i
 
       base_name = base_name.to_s.gsub(/ +/, '_')
@@ -98,15 +60,14 @@ module Metriks::Reporter
         base_name = "#{@prefix}.#{base_name}"
       end
 
-      keys.flatten.each do |key|
-        name = key.to_s.gsub(/^get_/, '')
+      metric.reportable_fields.each do |key|
         value = metric.send(key)
-        socket.write("#{base_name}.#{name} #{value} #{time}\n")
+        socket.write("#{base_name}.#{key} #{value} #{time}\n")
       end
 
-      unless snapshot_keys.empty?
+      if metric.respond_to?(:snapshot)
         snapshot = metric.snapshot
-        snapshot_keys.flatten.each do |key|
+        [:median, :get_95th_percentile].each do |key|
           name = key.to_s.gsub(/^get_/, '')
           value = snapshot.send(key)
           socket.write("#{base_name}.#{name} #{value} #{time}\n")

@@ -43,4 +43,8 @@ class GaugeTest < Test::Unit::TestCase
 
     assert_equal 123, gauge.value
   end
+
+  def test_reportable_fields
+    assert_equal Metriks::Gauge.new.reportable_fields, [:value]
+  end
 end

@@ -108,5 +108,12 @@ module Metriks
         new_values
       end
     end
+
+    # Private: The fields that should be reported to a metrics consumer.
+    #
+    # Returns an array of symbols.
+    def reportable_fields
+      [:count, :min, :max, :mean, :stddev]
+    end
   end
 end

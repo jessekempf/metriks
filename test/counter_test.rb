@@ -36,4 +36,8 @@ class CounterTest < Test::Unit::TestCase
 
     assert_equal 10000, @counter.count
   end
+
+  def test_reportable_fields
+    assert_equal @counter.reportable_fields, [:count]
+  end
 end

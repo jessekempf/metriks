@@ -196,4 +196,13 @@ class HistogramTest < Test::Unit::TestCase
 
     assert_equal 5, @histogram.min
   end
+
+  def test_reportable_fields
+    sample = Metriks::ExponentiallyDecayingSample.new(Metriks::Histogram::DEFAULT_SAMPLE_SIZE, Metriks::Histogram::DEFAULT_ALPHA)
+    fields = [
+      :count, :min, :max, :mean, :stddev
+    ]
+
+    assert_equal fields, Metriks::Histogram.new(sample).reportable_fields
+  end
 end
